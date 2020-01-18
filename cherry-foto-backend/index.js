@@ -8,7 +8,7 @@ const upload = multer({ dest: __dirname + '/uploads/images' });
 const app = express()
 const port = 3000
 
-const map = [invertColors, grayScale, sunset, cool, modulo]
+const map = [invertColors, grayScale, sunset, cool, cartoon]
 
 app.use('/static', express.static(path.join(__dirname, 'public')))
 
@@ -29,7 +29,6 @@ app.post('/upload', upload.single('photo'), (req, res) => {
         return res.status(401).json({ error: 'Please provide an image' });
     }
 });
-
 
 function initFolderIfAbsent(pathname) {
     const newPath = path.resolve(
@@ -69,7 +68,7 @@ function processPixels(img) {
     const filterChosen = true;
 
     if (filterChosen) {
-        map[1](pixels, numPixels)
+        map[4](pixels, numPixels)
     } else {
         const numberOfFilters = map.length
         map[getRandomNumber(numberOfFilters)](pixels, numPixels)
@@ -123,15 +122,85 @@ function cool(pixels, numPixels) {
     }
 }
 
-function modulo(pixels, numPixels) {
+function getModelPixels() {
+    const red1 = [245, 78, 41];
+    const red2 = [186, 57, 32];
+    const red3 = [99, 31, 17];
+    const orange1 = [255, 149, 43];
+    const orange2 = [171, 100, 29];
+    const orange3 = [110, 64, 19];
+    const green1 = [176, 255, 66];
+    const green2 = [127, 184, 48];
+    const green3 = [76, 110, 29];
+    const green4 = [13, 128, 0];
+    const blue1 = [0, 166, 235];
+    const blue2 = [2, 118, 168];
+    const blue3 = [0, 66, 94];
+    const blue4 = [0, 80, 156];
+    const yellow1 = [255, 183, 49];
+    const yellow2 = [181, 130, 34];
+    const yellow3 = [107, 77, 20];
+    const brown1 = [355, 199, 94];
+    const brown2 = [189, 147, 70];
+    const brown3 = [133, 186, 7];
+    const black = [0, 0, 0];
+    const gray = [59, 59, 59];
+    const white = [255, 255, 255];
+    let modelPixels = [
+        red1, 
+        red2, 
+        red3, 
+        orange1, 
+        orange2, 
+        orange3, 
+        green1, 
+        green2, 
+        green3, 
+        green4, 
+        blue1, 
+        blue2, 
+        blue3, 
+        blue4, 
+        yellow1, 
+        yellow2, 
+        yellow3, 
+        brown1,
+        brown2,
+        brown3,
+        black, 
+        gray,
+        white, 
+    ];
+    return modelPixels
+}
+
+function cartoon(pixels, numPixels) {
+    let modelPixels = getModelPixels()
     for (let i = 0; i < numPixels; i++) {
-        const r = Math.min(pixels[i * 4] + 50, 255)
-        const g = Math.min(pixels[(i * 4) + 1] + 50, 255)
-        const b = Math.max(pixels[(i * 4) + 2] - 50, 0)
-        pixels[i * 4] = r
-        pixels[(i * 4) + 1] = g
-        pixels[(i * 4) + 2] = b
+        const r = pixels[i * 4];
+        const g = pixels[(i * 4) + 1];
+        const b = pixels[(i * 4) + 2];
+        const currentPixel = [r, g, b];
+        const distances = modelPixels.map(model => distanceTo(model, currentPixel));
+        const floorPixel = getFloorPixelIndex(distances)
+        pixels[i * 4] = modelPixels[floorPixel][0];
+        pixels[(i * 4) + 1] = modelPixels[floorPixel][1];
+        pixels[(i * 4) + 2] = modelPixels[floorPixel][2];
     }
+}
+
+function getFloorPixelIndex(distances) {
+    return distances.indexOf(Math.min.apply(null, distances));
+}
+
+function distanceTo(pixel, model) {
+    let a = pixel[0] - model[0]
+    a = a * a
+    let b = pixel[1] - model[1]
+    b = b * b
+    let c = pixel[2] - model[2]
+    c = c * c
+    return a + b + c
 }
 
 function getRandomNumber(numberOfFilters) {
@@ -140,14 +209,18 @@ function getRandomNumber(numberOfFilters) {
 
 function writeEditedImage(canvas, filename) {
     const editedFilename = path.basename(filename)
+    const writeStream = fs.createWriteStream(
+        path.resolve(__dirname, 'edited_photos/' + getNewFilename())
+    )
+    canvas.createJPEGStream().pipe(writeStream)
+}
+
+function getNewFilename() {
     const d = new Date();
     var newFilename = d.getDate() + "-"
     newFilename += (d.getMonth() + 1) + "-"
     newFilename += d.getFullYear() + "\ "
     newFilename += d.getHours() + "." + d.getMinutes() + "." + d.getSeconds()
     newFilename += '.jpg'
-    const writeStream = fs.createWriteStream(
-        path.resolve(__dirname, 'edited_photos/' + newFilename)
-    )
-    canvas.createJPEGStream().pipe(writeStream)
+    return newFilename
 }
