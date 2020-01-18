@@ -8,6 +8,8 @@ const upload = multer({ dest: __dirname + '/uploads/images' });
 const app = express()
 const port = 3000
 
+const map = [invertColors, grayScale, sunset, cool]
+
 app.use('/static', express.static(path.join(__dirname, 'public')))
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
@@ -56,12 +58,18 @@ function processPixels(img) {
     const pixels = imageData.data
     const numPixels = w * h
 
-    // call filter function here
-    invertColors(pixels, numPixels)
+    const filterChosen = false;
+
+    if (filterChosen) {
+        map[0](pixels, numPixels)
+    } else {
+        map[getRandomNumber()](pixels, numPixels)
+    }
 
     ctx.clearRect(0, 0, w, h)
     ctx.putImageData(imageData, 0, 0)
     writeEditedImage(canvas, img.src)
+    console.log("Image successfully filtered!")
 }
 
 function invertColors(pixels, numPixels) {
@@ -84,11 +92,37 @@ function grayScale(pixels, numPixels) {
     }
 }
 
+function sunset(pixels, numPixels) {
+    for (let i = 0; i< numPixels; i++) {
+        var r = pixels[i * 4]
+        var g = Math.max(pixels[(i * 4) + 1] - 30, 0)
+        var b = Math.max(pixels[(i * 4) + 2] - 60, 0)
+        pixels[i * 4] = r
+        pixels[(i * 4) + 1] = g
+        pixels[(i * 4) + 2] = b
+    }
+}
+
+function cool(pixels, numPixels) {
+    for (let i = 0; i< numPixels; i++) {
+        var r = Math.max(pixels[i * 4] - 30, 0)
+        var g = Math.max(pixels[(i * 4) + 1] - 5)
+        var b = pixels[(i * 4) + 2]
+        pixels[i * 4] = r
+        pixels[(i * 4) + 1] = g
+        pixels[(i * 4) + 2] = b
+    }
+}
+
+function getRandomNumber() {
+    return Math.floor(Math.random() * Math.floor(4))
+}
+
 function writeEditedImage(canvas, filename) {
     const editedFilenameArray = filename.split("/");
     const editedFilename = editedFilenameArray[editedFilenameArray.length - 1];
-    canvas.createJPEGStream()
-          .pipe(fs.createWriteStream(
-              path.resolve(__dirname, 'editedPhotos/' + editedFilename + '.jpg'))
-          )
+    const writeStream = fs.createWriteStream(
+        path.resolve(__dirname, 'editedPhotos/' + editedFilename + '.jpg')
+    )
+    canvas.createJPEGStream().pipe(writeStream)
 }
