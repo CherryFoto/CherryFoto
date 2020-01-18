@@ -3,13 +3,15 @@ import UploadPhotoDialog from "./UploadPhotoDialog";
 import placeholderImg from "./placeholder.png"
 import "./App.css";
 import { AppBar, Toolbar, Typography, Button, ButtonGroup, Card, CardMedia } from "@material-ui/core";
+import axios from "axios";
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       files: [],
-      image: placeholderImg
+      image: placeholderImg,
+      lastUploadedFilename: ""
     };
   }
 
@@ -20,15 +22,35 @@ class App extends Component {
     });
   }
 
+  updateLastUploadedFilename = filename => {
+    this.setState({ lastUploadedFilename: filename })
+  }
+
+  filterOnClick = filter => () => {
+    axios.get('http://localhost:3001/filterImage', {
+        params: {
+          filename: this.state.lastUploadedFilename,
+          filter: filter
+        }
+      })
+      .then(res => {
+        console.log(res)
+      })
+  }
+
   render() {
     return (
       <div>
         <AppBar position="static" className={"appBar"}>
           <Toolbar>
             <Typography variant="h5" style={{ flexGrow: 1 }}>
-              🍒 CherryFoto
+              <span role="img" aria-label="cherry">🍒</span>
+              {" CherryFoto"}
             </Typography>
-            <UploadPhotoDialog files={this.state.files} updateFilesState={this.updateFilesState}/>
+            <UploadPhotoDialog 
+              updateFilesState={this.updateFilesState}
+              updateLastUploadedFilename={this.updateLastUploadedFilename}
+            />
           </Toolbar>
         </AppBar>
         <div>
@@ -41,7 +63,7 @@ class App extends Component {
         </div>
         <div className={"filterButtonsRow"}>
           <ButtonGroup fullWidth variant="contained" color="primary" aria-label="contained primary button group">
-            <Button variant="contained" color="primary">Invert</Button>
+            <Button variant="contained" color="primary" onClick={this.filterOnClick("invert")}>Invert</Button>
             <Button variant="contained" color="primary">Grayscale</Button>
             <Button variant="contained" color="primary">Warm</Button>
             <Button variant="contained" color="primary">Cool</Button>
