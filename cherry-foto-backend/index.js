@@ -14,8 +14,6 @@ app.use('/static', express.static(path.join(__dirname, 'public')))
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
-app.get('/', (req, res) => res.send('Hello World!'))
-
 app.get('/image', (req, res) => {
     // console.log()
     res.sendFile(__dirname + '/uploads/images/' + req.query.filePath)

@@ -36,3 +36,14 @@
     transform: rotate(360deg);
   }
 }
+
+.appBar {
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+.mainPhotoCard {
+  margin: auto;
+  margin-top: 30px;
+  width: 400px;
+}

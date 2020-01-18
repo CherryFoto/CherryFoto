@@ -10,7 +10,6 @@ export default class UploadPhotoDialog extends Component {
     super(props);
     this.state = {
       open: false,
-      files: []
     };
   }
 
@@ -29,7 +28,7 @@ export default class UploadPhotoDialog extends Component {
 
     axios({
       method: 'post',
-      url: 'http://localhost:3000/upload',
+      url: '/upload',
       data: bodyFormData,
       headers: {'Content-Type': 'multipart/form-data' }
       })
@@ -42,8 +41,9 @@ export default class UploadPhotoDialog extends Component {
           console.log(response);
       });
 
+    this.props.updateFilesState(files)
+    
     this.setState({
-      files: files,
       open: false
     });
   }
