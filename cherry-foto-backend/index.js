@@ -21,6 +21,7 @@ app.get('/image', (req, res) => {
 app.post('/upload', upload.single('photo'), (req, res) => {
     if (req.file) {
         res.json(req.file);
+        getImageThenEdit(req.file.path, duplicateImage)
         return res.status(200);
     } else {
         return res.status(401).json({ error: 'Please provide an image' });
@@ -40,11 +41,9 @@ function getImageThenEdit(uri, callback) {
     $(img).load(function() { 
         callback(img); 
     })
-    /* Return same image first */
-    duplicateImage(img)
 }
 
-function duplicatImage(img) {
+function duplicateImage(img) {
     var canvas = new Canvas(img.width, img.height)
     writeEditedImage(canvas)
 }
