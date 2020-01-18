@@ -1,5 +1,6 @@
 const express = require('express')
 const multer = require('multer');
+var Canvas = require('canvas');
 const path = require('path');
 const upload = multer({ dest: __dirname + '/uploads/images' });
 
@@ -25,3 +26,24 @@ app.post('/upload', upload.single('photo'), (req, res) => {
         return res.status(401).json({ error: 'Please provide an image' });
     }
 });
+
+let image = 'image/path/here'
+
+app.get('/', (req, res) => res.send('Hello World!'))
+
+app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+
+/* Use this function and pass uri into it. Callback will be the different filters */
+function getImageThenEdit(uri, callback) {
+    var img = new Image();
+    img.src = uri;
+    $(img).load(function() { 
+        callback(img); 
+    })
+}
+
+function invertColors(img) {
+    var canvas = new Canvas(800, 800);
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+}
