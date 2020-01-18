@@ -47,9 +47,11 @@ class App extends Component {
         }
       })
       .then(res => {
-        this.setState({
-          image: `http://localhost:3001/filteredImage?filename=${res.data}`
-        });
+        setTimeout(() => {
+          this.setState({
+            image: `http://localhost:3001/filteredImage?filename=${res.data}`
+          })
+        }, 100)
       });
   };
 
