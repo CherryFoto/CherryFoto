@@ -19,7 +19,7 @@ class UploadPhoto extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{flex: 1}}>
         <DropzoneArea onChange={this.handleChange.bind(this)} />
         <Button onClick={this.handleSubmit.bind(this)}>Filter</Button>
       </div>

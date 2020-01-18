@@ -1,11 +1,23 @@
 import React, { Component } from "react";
-import UploadPhoto from "./UploadPhoto";
+import UploadPhotoDialog from "./UploadPhotoDialog";
 import "./App.css";
-import { Modal } from "@material-ui/core";
+import { AppBar, Toolbar, Typography, Button, Modal, Card } from "@material-ui/core";
+import { makeStyles } from '@material-ui/core/styles';
+import UploadButton from "./UploadButton";
+
 
 class App extends Component {
   render() {
-    return <UploadPhoto />;
+    return (
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h5" style={{ flexGrow: 1 }}>
+            🍒 CherryFoto
+          </Typography>
+          <UploadPhotoDialog />
+        </Toolbar>
+      </AppBar>
+    );
   }
 }
 
