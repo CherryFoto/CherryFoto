@@ -27,14 +27,20 @@ class App extends Component {
   }
 
   filterOnClick = filter => () => {
-    axios.get('http://localhost:3001/filterImage', {
+    if (this.state.lastUploadedFilename === "") {
+      return;
+    }
+    
+    axios.get('http://localhost:3001/filterImageLink', {
         params: {
           filename: this.state.lastUploadedFilename,
           filter: filter
         }
       })
       .then(res => {
-        console.log(res)
+        this.setState({
+          image: `http://localhost:3001/filteredImage?filename=${res.data}`
+        })
       })
   }
 
@@ -64,10 +70,10 @@ class App extends Component {
         <div className={"filterButtonsRow"}>
           <ButtonGroup fullWidth variant="contained" color="primary" aria-label="contained primary button group">
             <Button variant="contained" color="primary" onClick={this.filterOnClick("invert")}>Invert</Button>
-            <Button variant="contained" color="primary">Grayscale</Button>
-            <Button variant="contained" color="primary">Warm</Button>
-            <Button variant="contained" color="primary">Cool</Button>
-            <Button variant="contained" color="primary">Modulo</Button>
+            <Button variant="contained" color="primary" onClick={this.filterOnClick("grayscale")}>Grayscale</Button>
+            <Button variant="contained" color="primary" onClick={this.filterOnClick("sunset")}>Warm</Button>
+            <Button variant="contained" color="primary" onClick={this.filterOnClick("cool")}>Cool</Button>
+            <Button variant="contained" color="primary" onClick={this.filterOnClick("modulo")}>Modulo</Button>
           </ButtonGroup>
         </div>
       </div>
