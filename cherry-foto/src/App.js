@@ -87,7 +87,7 @@ class App extends Component {
               variant="contained"
               color="primary"
               onClick={this.filterOnClick("invert")}
-              style={{ marginRight: 20, borderRadius: 8 }}
+              style={{ marginRight: 20, borderRadius: 4 }}
             >
               Invert
             </Button>
@@ -96,7 +96,7 @@ class App extends Component {
               variant="contained"
               color="primary"
               onClick={this.filterOnClick("grayscale")}
-              style={{ marginRight: 10, marginLeft: 10, borderRadius: 8 }}
+              style={{ marginRight: 10, marginLeft: 10, borderRadius: 4 }}
             >
               Grayscale
             </Button>
@@ -104,7 +104,7 @@ class App extends Component {
               variant="contained"
               color="primary"
               onClick={this.filterOnClick("sunset")}
-              style={{ marginLeft: 20, borderRadius: 8 }}
+              style={{ marginLeft: 20, borderRadius: 4 }}
             >
               Warm
             </Button>
@@ -119,23 +119,23 @@ class App extends Component {
               variant="contained"
               color="primary"
               onClick={this.filterOnClick("cool")}
-              style={{ marginRight: 20, borderRadius: 8 }}
+              style={{ marginRight: 20, borderRadius: 4 }}
             >
               Cool
             </Button>
             <Button
               variant="contained"
               color="primary"
-              onClick={this.filterOnClick("cartoon")}
-              style={{ marginRight: 10, marginLeft: 10, borderRadius: 8 }}
+              onClick={this.filterOnClick("wonky")}
+              style={{ marginRight: 10, marginLeft: 10, borderRadius: 4 }}
             >
-              Cartoon
+              Wonky
             </Button>
             <Button
               variant="contained"
               color="primary"
               onClick={this.filterOnClick("random")}
-              style={{ marginLeft: 20, borderRadius: 8 }}
+              style={{ marginLeft: 20, borderRadius: 4 }}
             >
               I'm Feeling Lucky
             </Button>
