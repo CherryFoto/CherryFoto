@@ -8,29 +8,30 @@ const upload = multer({ dest: __dirname + '/uploads/images' });
 const app = express()
 const port = 3000
 
-const map = [invertColors, grayScale, sunset, cool]
+const map = [invertColors, grayScale, sunset, cool, modulo]
 
 app.use('/static', express.static(path.join(__dirname, 'public')))
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.listen(port, () => console.log(`CherryFoto listening on port ${port}!`))
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
 app.get('/image', (req, res) => {
-    initFolderIfAbsent('/uploads/images')
+    initFolderIfAbsent('/uploads/images');
     res.sendFile(__dirname + '/uploads/images/' + req.query.filePath)
 })
 
 app.post('/upload', upload.single('photo'), (req, res) => {
     if (req.file) {
         res.json(req.file);
-        initFolderIfAbsent('edited_photos')
+        initFolderIfAbsent('edited_photos');
         getImageThenEdit(req.file.path, processPixels)
         return res.status(200);
     } else {
         return res.status(401).json({ error: 'Please provide an image' });
     }
 });
+
 
 function initFolderIfAbsent(pathname) {
     const newPath = path.resolve(
@@ -45,7 +46,7 @@ function getImageThenEdit(uri, callback) {
     loadImage(uri).then((img) => {
         callback(img)
     }).catch(function() {
-        console.log("error")
+        console.log("Error filtering image")
     })
 }
 
@@ -72,7 +73,8 @@ function processPixels(img) {
     if (filterChosen) {
         map[0](pixels, numPixels)
     } else {
-        map[getRandomNumber()](pixels, numPixels)
+        const numberOfFilters = map.length
+        map[getRandomNumber(numberOfFilters)](pixels, numPixels)
     }
 
     ctx.clearRect(0, 0, w, h)
@@ -103,9 +105,9 @@ function grayScale(pixels, numPixels) {
 
 function sunset(pixels, numPixels) {
     for (let i = 0; i< numPixels; i++) {
-        var r = pixels[i * 4]
-        var g = Math.max(pixels[(i * 4) + 1] - 30, 0)
-        var b = Math.max(pixels[(i * 4) + 2] - 60, 0)
+        const r = pixels[i * 4]
+        const g = Math.max(pixels[(i * 4) + 1] - 30, 0)
+        const b = Math.max(pixels[(i * 4) + 2] - 60, 0)
         pixels[i * 4] = r
         pixels[(i * 4) + 1] = g
         pixels[(i * 4) + 2] = b
@@ -114,23 +116,40 @@ function sunset(pixels, numPixels) {
 
 function cool(pixels, numPixels) {
     for (let i = 0; i< numPixels; i++) {
-        var r = Math.max(pixels[i * 4] - 30, 0)
-        var g = Math.max(pixels[(i * 4) + 1] - 5)
-        var b = pixels[(i * 4) + 2]
+        const r = Math.max(pixels[i * 4] - 30, 0)
+        const g = Math.max(pixels[(i * 4) + 1] - 5)
+        const b = pixels[(i * 4) + 2]
         pixels[i * 4] = r
         pixels[(i * 4) + 1] = g
         pixels[(i * 4) + 2] = b
     }
 }
 
-function getRandomNumber() {
-    return Math.floor(Math.random() * Math.floor(4))
+function modulo(pixels, numPixels) {
+    for (let i = 0; i< numPixels; i++) {
+        const r = (pixels[i * 4] + 100) % 255
+        const g = pixels[(i * 4) + 1]
+        const b = pixels[(i * 4) + 2]
+        pixels[i * 4] = r
+        pixels[(i * 4) + 1] = g
+        pixels[(i * 4) + 2] = b
+    }
+}
+
+function getRandomNumber(numberOfFilters) {
+    return Math.floor(Math.random() * Math.floor(numberOfFilters))
 }
 
 function writeEditedImage(canvas, filename) {
     const editedFilename = path.basename(filename)
+    const d = new Date();
+    var newFilename = d.getDate() + "-"
+    newFilename += (d.getMonth() + 1) + "-"
+    newFilename += d.getFullYear() + "\ "
+    newFilename += d.getHours() + "." + d.getMinutes() + "." + d.getSeconds()
+    newFilename += '.jpg'
     const writeStream = fs.createWriteStream(
-        path.resolve(__dirname, 'edited_photos/' + editedFilename + '.jpg')
+        path.resolve(__dirname, 'edited_photos/' + newFilename)
     )
     canvas.createJPEGStream().pipe(writeStream)
 }
