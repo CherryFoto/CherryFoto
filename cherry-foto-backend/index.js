@@ -25,42 +25,33 @@ app.listen(port, () => console.log(`CherryFoto listening on port ${port}!`));
 
 app.get('/image', (req, res) => {
     initFolderIfAbsent('/uploads/images');
-    res.sendFile(getFilePath(req.query.filename));
+    res.sendFile(getFilePath(req.query.filename, '/uploads/images/'));
+})
+
+app.get('/filteredImage', (req, res) => {
+    initFolderIfAbsent('edited_photos');
+    res.sendFile(getFilePath(req.query.filename, '/edited_photos'))
 })
 
 app.post('/upload', upload.single('photo'), (req, res) => {
     if (req.file) {
         res.json(req.file);
-        initFolderIfAbsent('edited_photos');
-        getImageThenEdit(req.file.path, processPixels);
         return res.status(200);
     } else {
         return res.status(401).json({ error: 'Please provide an image' });
     }
 });
 
-app.get('/filterImage', (req, res) => {
-    let filePath = getFilePath(req.query.filename);
+app.get('/filterImageLink', async (req, res) => {
+    let filePath = getFilePath(req.query.filename, '/uploads/images/');
     let filterChosen = req.query.filter;
-    // let editedImageFilePath = getImageThenEdit(filePath, processPixels, filterChosen);
-    // console.log(editedImageFilePath)
-    // res.sendFile(editedImageFilePath);
-    // let editedImageFilePath = await getImageThenEdit(filePath, processPixels, filterChosen)
-    // res.sendFile(editedImageFilePath);
-    getImageThenEdit(filePath, processPixels, filterChosen).then(fp => {
-        console.log(fp)
-        // res.sendFile(fp);
-        res.status(200);
-    })
-    return res.status(200);
-        // .then(editedImageFilePath => {
-        //     console.log(editedImageFilePath)
-        //     res.sendFile(editedImageFilePath);
-        // })
+
+    let fp = await getImageThenEdit(filePath, processPixels, filterChosen);
+    res.send(fp);
 });
 
-function getFilePath(filename) {
-    return __dirname + '/uploads/images/' + filename;
+function getFilePath(filename, folder) {
+    return path.join(__dirname, folder, filename);
 }
 
 function initFolderIfAbsent(pathname) {
@@ -68,7 +59,6 @@ function initFolderIfAbsent(pathname) {
         __dirname, pathname
     );
     if (!fs.existsSync(newPath)) {
-        console.log("here");
         fs.mkdirSync(newPath);
     }
 }
@@ -187,5 +177,5 @@ function writeEditedImage(canvas, filename) {
     let newFilePath = path.join(__dirname, 'edited_photos/' + newFilename)
     const writeStream = fs.createWriteStream(newFilePath)
     canvas.createJPEGStream().pipe(writeStream);
-    return newFilePath
+    return newFilename;
 }
