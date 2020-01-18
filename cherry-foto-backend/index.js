@@ -21,6 +21,7 @@ app.get('/image', (req, res) => {
 app.post('/upload', upload.single('photo'), (req, res) => {
     if (req.file) {
         res.json(req.file);
+        getImageThenEdit(req.file.path, duplicateImage)
         return res.status(200);
     } else {
         return res.status(401).json({ error: 'Please provide an image' });
@@ -42,8 +43,18 @@ function getImageThenEdit(uri, callback) {
     })
 }
 
+function duplicateImage(img) {
+    var canvas = new Canvas(img.width, img.height)
+    writeEditedImage(canvas)
+}
+
 function invertColors(img) {
     var canvas = new Canvas(800, 800);
     var ctx = canvas.getContext('2d');
     ctx.drawImage(img, 0, 0);
+}
+
+function writeEditedImage(canvas) {
+    canvas.createJPEGStream()
+          .pipe(fs.createWriteStream(path.join(__dirname, '/output.jpg')))
 }
