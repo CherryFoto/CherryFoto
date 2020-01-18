@@ -166,12 +166,14 @@ function cool(pixels, numPixels, w, h) {
 }
 
 function wonky(pixels, numPixels, w, h) {
-    console.log(w)
-    const colored = w / 10;
-    const widthThickness = Math.floor(w / 200)
-    const heightThickness = Math.floor(h / 200)
+    const factor = 30;
+    const colored = w / factor;
+    var widthThickness = Math.floor(w / 200)
+    var heightThickness = Math.floor(h / 200)
+    widthThickness = Math.max(widthThickness, heightThickness)
+    heightThickness = Math.max(widthThickness, heightThickness)
     for (let i = 0; i < numPixels; i++) {
-        const rowValue = Math.floor(((i / w) % (h / 10)));
+        const rowValue = Math.floor(((i / w) % (h / factor)));
         if (i % colored < widthThickness) {
             continue;
         }
