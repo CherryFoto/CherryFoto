@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import UploadPhotoDialog from "./UploadPhotoDialog";
 import placeholderImg from "./placeholder.png"
 import "./App.css";
-import { AppBar, Toolbar, Typography, Button, Modal, Card, CardMedia } from "@material-ui/core";
+import { AppBar, Toolbar, Typography, Button, ButtonGroup, Card, CardMedia } from "@material-ui/core";
 
 class App extends Component {
   constructor(props) {
@@ -38,6 +38,15 @@ class App extends Component {
             image={this.state.image}
           />
         </Card>
+        </div>
+        <div className={"filterButtonsRow"}>
+          <ButtonGroup fullWidth variant="contained" color="primary" aria-label="contained primary button group">
+            <Button variant="contained" color="primary">Invert</Button>
+            <Button variant="contained" color="primary">Grayscale</Button>
+            <Button variant="contained" color="primary">Warm</Button>
+            <Button variant="contained" color="primary">Cool</Button>
+            <Button variant="contained" color="primary">Modulo</Button>
+          </ButtonGroup>
         </div>
       </div>
     );

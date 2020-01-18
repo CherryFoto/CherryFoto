@@ -45,5 +45,13 @@
 .mainPhotoCard {
   margin: auto;
   margin-top: 30px;
-  width: 400px;
+  margin-bottom: 30px;
+  width: 600px;
+}
+
+.filterButtonsRow {
+  margin: auto;
+  flex: 1;
+  /* justify-content: space-around; */
+  width: 600px;
 }
