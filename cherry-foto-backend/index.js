@@ -30,10 +30,6 @@ app.post('/upload', upload.single('photo'), (req, res) => {
 
 let image = 'image/path/here'
 
-app.get('/', (req, res) => res.send('Hello World!'))
-
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
-
 /* Use this function and pass uri into it. Callback will be the different filters */
 function getImageThenEdit(uri, callback) {
     var img = new Image();
