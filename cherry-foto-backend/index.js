@@ -14,7 +14,7 @@ const filters = {
     grayscale: grayScale,
     sunset: sunset,
     cool: cool,
-    cartoon: cartoon,
+    wonky: wonky,
 }
 
 const filtersArray = [
@@ -22,7 +22,7 @@ const filtersArray = [
     grayScale,
     sunset,
     cool,
-    cartoon,
+    wonky
 ]
 
 app.use('/static', express.static(path.join(__dirname, 'public')));
@@ -110,7 +110,7 @@ function processPixels(img, filterChosen) {
     const isRandom = filterChosen == 'random';
 
     if (!isRandom) {
-        filters[filterChosen](pixels, numPixels);
+        filters[filterChosen](pixels, numPixels, w, h);
     } else {
         const numberOfFilters = filtersArray.length;
         filtersArray[getRandomNumber(numberOfFilters)](pixels, numPixels);
@@ -123,7 +123,7 @@ function processPixels(img, filterChosen) {
     return editedImageFilePath;
 }
 
-function invertColors(pixels, numPixels) {
+function invertColors(pixels, numPixels, w, h) {
     for (let i = 0; i < numPixels; i++) {
         pixels[i * 4] = 255 - pixels[i * 4];
         pixels[(i * 4) + 1] = 255 - pixels[(i * 4) + 1];
@@ -131,7 +131,7 @@ function invertColors(pixels, numPixels) {
     }
 }
 
-function grayScale(pixels, numPixels) {
+function grayScale(pixels, numPixels, w, h) {
     for (let i = 0; i < numPixels; i++) {
         const r = pixels[i * 4];
         const g = pixels[(i * 4) + 1];
@@ -143,7 +143,7 @@ function grayScale(pixels, numPixels) {
     }
 }
 
-function sunset(pixels, numPixels) {
+function sunset(pixels, numPixels, w, h) {
     for (let i = 0; i< numPixels; i++) {
         const r = pixels[i * 4];
         const g = Math.max(pixels[(i * 4) + 1] - 30, 0);
@@ -154,7 +154,7 @@ function sunset(pixels, numPixels) {
     }
 }
 
-function cool(pixels, numPixels) {
+function cool(pixels, numPixels, w, h) {
     for (let i = 0; i< numPixels; i++) {
         const r = Math.max(pixels[i * 4] - 30, 0);
         const g = Math.max(pixels[(i * 4) + 1] - 5);
@@ -165,14 +165,26 @@ function cool(pixels, numPixels) {
     }
 }
 
-function cartoon(pixels, numPixels) {
-    for (let i = 0; i< numPixels; i++) {
-        const r = (pixels[i * 4] + 100) % 255;
+function wonky(pixels, numPixels, w, h) {
+    console.log(w)
+    const colored = w / 10;
+    const widthThickness = Math.floor(w / 200)
+    const heightThickness = Math.floor(h / 200)
+    for (let i = 0; i < numPixels; i++) {
+        const rowValue = Math.floor(((i / w) % (h / 10)));
+        if (i % colored < widthThickness) {
+            continue;
+        }
+        if (rowValue < heightThickness) {
+            continue;
+        }
+        const r = pixels[i * 4];
         const g = pixels[(i * 4) + 1];
         const b = pixels[(i * 4) + 2];
-        pixels[i * 4] = r;
-        pixels[(i * 4) + 1] = g;
-        pixels[(i * 4) + 2] = b;
+        const avg = (r + g + b) / 3;
+        pixels[i * 4] = avg;
+        pixels[(i * 4) + 1] = avg;
+        pixels[(i * 4) + 2] = avg;
     }
 }
 
