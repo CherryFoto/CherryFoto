@@ -1,3 +1,4 @@
+const fs = require('fs')
 const express = require('express')
 const multer = require('multer');
 const { createCanvas, loadImage } = require('canvas');
@@ -34,6 +35,8 @@ let image = 'image/path/here'
 function getImageThenEdit(uri, callback) {
     loadImage(uri).then((img) => {
         callback(img)
+    }).catch(function() {
+        console.log("error")
     })
 }
 
