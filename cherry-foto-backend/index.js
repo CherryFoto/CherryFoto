@@ -119,8 +119,7 @@ function getRandomNumber() {
 }
 
 function writeEditedImage(canvas, filename) {
-    const editedFilenameArray = filename.split("/");
-    const editedFilename = editedFilenameArray[editedFilenameArray.length - 1];
+    const editedFilename = path.basename(filename)
     const writeStream = fs.createWriteStream(
         path.resolve(__dirname, 'editedPhotos/' + editedFilename + '.jpg')
     )
