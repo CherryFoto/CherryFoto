@@ -12,6 +12,7 @@ import {
   CardMedia
 } from "@material-ui/core";
 import axios from "axios";
+import NoImageSnackbar from "./NoImageSnackbar";
 
 class App extends Component {
   constructor(props) {
@@ -19,7 +20,8 @@ class App extends Component {
     this.state = {
       files: [],
       image: placeholderImg,
-      lastUploadedFilename: ""
+      lastUploadedFilename: "",
+      isSnackbarOpened: false
     };
   }
 
@@ -34,8 +36,21 @@ class App extends Component {
     this.setState({ lastUploadedFilename: filename });
   };
 
+  snackbarHandleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    this.setState({
+      isSnackbarOpened: false
+    })
+  }
+
   filterOnClick = filter => () => {
     if (this.state.lastUploadedFilename === "") {
+      this.setState({
+        isSnackbarOpened: true
+      })
       return;
     }
 
@@ -87,7 +102,7 @@ class App extends Component {
               variant="contained"
               color="primary"
               onClick={this.filterOnClick("invert")}
-              style={{ marginRight: 20, borderRadius: 8 }}
+              style={{ marginRight: 20, borderRadius: 4 }}
             >
               Invert
             </Button>
@@ -96,7 +111,7 @@ class App extends Component {
               variant="contained"
               color="primary"
               onClick={this.filterOnClick("grayscale")}
-              style={{ marginRight: 10, marginLeft: 10, borderRadius: 8 }}
+              style={{ marginRight: 10, marginLeft: 10, borderRadius: 4 }}
             >
               Grayscale
             </Button>
@@ -104,7 +119,7 @@ class App extends Component {
               variant="contained"
               color="primary"
               onClick={this.filterOnClick("sunset")}
-              style={{ marginLeft: 20, borderRadius: 8 }}
+              style={{ marginLeft: 20, borderRadius: 4 }}
             >
               Warm
             </Button>
@@ -119,7 +134,7 @@ class App extends Component {
               variant="contained"
               color="primary"
               onClick={this.filterOnClick("cool")}
-              style={{ marginRight: 20, borderRadius: 8 }}
+              style={{ marginRight: 20, borderRadius: 4 }}
             >
               Cool
             </Button>
@@ -127,7 +142,7 @@ class App extends Component {
               variant="contained"
               color="primary"
               onClick={this.filterOnClick("cartoon")}
-              style={{ marginRight: 10, marginLeft: 10, borderRadius: 8 }}
+              style={{ marginRight: 10, marginLeft: 10, borderRadius: 4 }}
             >
               Cartoon
             </Button>
@@ -135,12 +150,16 @@ class App extends Component {
               variant="contained"
               color="primary"
               onClick={this.filterOnClick("random")}
-              style={{ marginLeft: 20, borderRadius: 8 }}
+              style={{ marginLeft: 20, borderRadius: 4 }}
             >
               I'm Feeling Lucky
             </Button>
           </ButtonGroup>
         </div>
+        <NoImageSnackbar
+          open={this.state.isSnackbarOpened}
+          handleClose={this.snackbarHandleClose}
+        />
       </div>
     );
   }
