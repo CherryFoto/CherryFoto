@@ -1,6 +1,7 @@
+const fs = require('fs')
 const express = require('express')
 const multer = require('multer');
-var Canvas = require('canvas');
+const { createCanvas, loadImage } = require('canvas');
 const path = require('path');
 const upload = multer({ dest: __dirname + '/uploads/images' });
 
@@ -32,20 +33,20 @@ let image = 'image/path/here'
 
 /* Use this function and pass uri into it. Callback will be the different filters */
 function getImageThenEdit(uri, callback) {
-    var img = new Image();
-    img.src = uri;
-    $(img).load(function() { 
-        callback(img); 
+    loadImage(uri).then((img) => {
+        callback(img)
+    }).catch(function() {
+        console.log("error")
     })
 }
 
 function duplicateImage(img) {
-    var canvas = new Canvas(img.width, img.height)
+    var canvas = createCanvas(img.width, img.height)
     writeEditedImage(canvas)
 }
 
 function invertColors(img) {
-    var canvas = new Canvas(800, 800);
+    var canvas = createCanvas(800, 800);
     var ctx = canvas.getContext('2d');
     ctx.drawImage(img, 0, 0);
 }
