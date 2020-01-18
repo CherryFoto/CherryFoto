@@ -73,7 +73,7 @@ class App extends Component {
             <Button variant="contained" color="primary" onClick={this.filterOnClick("grayscale")}>Grayscale</Button>
             <Button variant="contained" color="primary" onClick={this.filterOnClick("sunset")}>Warm</Button>
             <Button variant="contained" color="primary" onClick={this.filterOnClick("cool")}>Cool</Button>
-            <Button variant="contained" color="primary" onClick={this.filterOnClick("modulo")}>Modulo</Button>
+            <Button variant="contained" color="primary" onClick={this.filterOnClick("modulo")}>Cartoon</Button>
           </ButtonGroup>
         </div>
       </div>
