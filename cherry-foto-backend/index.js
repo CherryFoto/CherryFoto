@@ -40,10 +40,22 @@ function getImageThenEdit(uri, callback) {
     $(img).load(function() { 
         callback(img); 
     })
+    /* Return same image first */
+    duplicateImage(img)
+}
+
+function duplicatImage(img) {
+    var canvas = new Canvas(img.width, img.height)
+    writeEditedImage(canvas)
 }
 
 function invertColors(img) {
     var canvas = new Canvas(800, 800);
     var ctx = canvas.getContext('2d');
     ctx.drawImage(img, 0, 0);
+}
+
+function writeEditedImage(canvas) {
+    canvas.createJPEGStream()
+          .pipe(fs.createWriteStream(path.join(__dirname, '/output.jpg')))
 }
