@@ -17,13 +17,14 @@ app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 app.get('/', (req, res) => res.send('Hello World!'))
 
 app.get('/image', (req, res) => {
-    // console.log()
+    initFolderIfAbsent('/uploads/images')
     res.sendFile(__dirname + '/uploads/images/' + req.query.filePath)
 })
 
 app.post('/upload', upload.single('photo'), (req, res) => {
     if (req.file) {
         res.json(req.file);
+        initFolderIfAbsent('edited_photos')
         getImageThenEdit(req.file.path, processPixels)
         return res.status(200);
     } else {
@@ -31,7 +32,15 @@ app.post('/upload', upload.single('photo'), (req, res) => {
     }
 });
 
-/* Use this function and pass uri into it. Callback will be the different filters */
+function initFolderIfAbsent(pathname) {
+    const newPath = path.resolve(
+        __dirname, pathname
+    )
+    if (!fs.existsSync(newPath)) {
+        fs.mkdirSync(newPath)
+    }
+}
+
 function getImageThenEdit(uri, callback) {
     loadImage(uri).then((img) => {
         callback(img)
@@ -121,7 +130,7 @@ function getRandomNumber() {
 function writeEditedImage(canvas, filename) {
     const editedFilename = path.basename(filename)
     const writeStream = fs.createWriteStream(
-        path.resolve(__dirname, 'editedPhotos/' + editedFilename + '.jpg')
+        path.resolve(__dirname, 'edited_photos/' + editedFilename + '.jpg')
     )
     canvas.createJPEGStream().pipe(writeStream)
 }
