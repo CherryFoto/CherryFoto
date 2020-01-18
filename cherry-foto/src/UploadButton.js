@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
 const useStyles = makeStyles({
   root: {
@@ -19,7 +20,13 @@ const useStyles = makeStyles({
 
 export default function UploadButton(props) {
   const classes = useStyles();
-  return <Button className={classes.root} onClick={props.onClick}>
-    Upload
-  </Button>;
+  return (
+    <Button 
+      className={classes.root} 
+      onClick={props.onClick} 
+      startIcon={<CloudUploadIcon />}
+    >
+      Upload
+    </Button>
+  );
 }
