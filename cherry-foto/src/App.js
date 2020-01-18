@@ -1,8 +1,16 @@
 import React, { Component } from "react";
 import UploadPhotoDialog from "./UploadPhotoDialog";
-import placeholderImg from "./placeholder.png"
+import placeholderImg from "./placeholder.png";
 import "./App.css";
-import { AppBar, Toolbar, Typography, Button, ButtonGroup, Card, CardMedia } from "@material-ui/core";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  ButtonGroup,
+  Card,
+  CardMedia
+} from "@material-ui/core";
 import axios from "axios";
 
 class App extends Component {
@@ -16,22 +24,23 @@ class App extends Component {
   }
 
   updateFilesState = files => {
-    this.setState({ 
-      files: files,  
+    this.setState({
+      files: files,
       image: window.URL.createObjectURL(files[0])
     });
-  }
+  };
 
   updateLastUploadedFilename = filename => {
-    this.setState({ lastUploadedFilename: filename })
-  }
+    this.setState({ lastUploadedFilename: filename });
+  };
 
   filterOnClick = filter => () => {
     if (this.state.lastUploadedFilename === "") {
       return;
     }
-    
-    axios.get('http://localhost:3001/filterImageLink', {
+
+    axios
+      .get("http://localhost:3001/filterImageLink", {
         params: {
           filename: this.state.lastUploadedFilename,
           filter: filter
@@ -40,9 +49,9 @@ class App extends Component {
       .then(res => {
         this.setState({
           image: `http://localhost:3001/filteredImage?filename=${res.data}`
-        })
-      })
-  }
+        });
+      });
+  };
 
   render() {
     return (
@@ -50,30 +59,84 @@ class App extends Component {
         <AppBar position="static" className={"appBar"}>
           <Toolbar>
             <Typography variant="h5" style={{ flexGrow: 1 }}>
-              <span role="img" aria-label="cherry">🍒</span>
+              <span role="img" aria-label="cherry">
+                🍒
+              </span>
               {" CherryFoto"}
             </Typography>
-            <UploadPhotoDialog 
+            <UploadPhotoDialog
               updateFilesState={this.updateFilesState}
               updateLastUploadedFilename={this.updateLastUploadedFilename}
             />
           </Toolbar>
         </AppBar>
         <div>
-        <Card className={"mainPhotoCard"}>
-          <CardMedia
-            component="img"
-            image={this.state.image}
-          />
-        </Card>
+          <Card className={"mainPhotoCard"}>
+            <CardMedia component="img" image={this.state.image} />
+          </Card>
         </div>
         <div className={"filterButtonsRow"}>
-          <ButtonGroup fullWidth variant="contained" color="primary" aria-label="contained primary button group">
-            <Button variant="contained" color="primary" onClick={this.filterOnClick("invert")}>Invert</Button>
-            <Button variant="contained" color="primary" onClick={this.filterOnClick("grayscale")}>Grayscale</Button>
-            <Button variant="contained" color="primary" onClick={this.filterOnClick("sunset")}>Warm</Button>
-            <Button variant="contained" color="primary" onClick={this.filterOnClick("cool")}>Cool</Button>
-            <Button variant="contained" color="primary" onClick={this.filterOnClick("modulo")}>Cartoon</Button>
+          <ButtonGroup
+            fullWidth
+            color="primary"
+            aria-label="contained primary button group"
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.filterOnClick("invert")}
+              style={{ marginRight: 20, borderRadius: 8 }}
+            >
+              Invert
+            </Button>
+
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.filterOnClick("grayscale")}
+              style={{ marginRight: 10, marginLeft: 10, borderRadius: 8 }}
+            >
+              Grayscale
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.filterOnClick("sunset")}
+              style={{ marginLeft: 20, borderRadius: 8 }}
+            >
+              Warm
+            </Button>
+          </ButtonGroup>
+          <div style={{ marginBottom: 20 }} />
+          <ButtonGroup
+            fullWidth
+            color="primary"
+            aria-label="contained primary button group"
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.filterOnClick("cool")}
+              style={{ marginRight: 20, borderRadius: 8 }}
+            >
+              Cool
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.filterOnClick("cartoon")}
+              style={{ marginRight: 10, marginLeft: 10, borderRadius: 8 }}
+            >
+              Cartoon
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.filterOnClick("random")}
+              style={{ marginLeft: 20, borderRadius: 8 }}
+            >
+              I'm Feeling Lucky
+            </Button>
           </ButtonGroup>
         </div>
       </div>
