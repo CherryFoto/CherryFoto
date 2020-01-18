@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { DropzoneArea } from "material-ui-dropzone";
 import "./App.css";
+import { Button } from "@material-ui/core";
 
 class App extends Component {
   constructor(props) {
@@ -14,8 +15,15 @@ class App extends Component {
       files: files
     });
   }
+  handleSubmit(files) {}
+
   render() {
-    return <DropzoneArea onChange={this.handleChange.bind(this)} />;
+    return (
+      <div>
+        <DropzoneArea onChange={this.handleChange.bind(this)} />
+        <Button onClick={this.handleSubmit.bind(this)}>Filter</Button>
+      </div>
+    );
   }
 }
 
