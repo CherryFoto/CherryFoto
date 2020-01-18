@@ -27,18 +27,16 @@ export default class UploadPhotoDialog extends Component {
     bodyFormData.append('photo', photo); 
 
     axios({
-      method: 'post',
-      url: '/upload',
-      data: bodyFormData,
-      headers: {'Content-Type': 'multipart/form-data' }
+        method: 'post',
+        url: 'http://localhost:3001/upload',
+        data: bodyFormData,
+        headers: {'Content-Type': 'multipart/form-data' }
       })
-      .then(function (response) {
-          //handle success
-          console.log(response);
+      .then(res => {
+        this.props.updateLastUploadedFilename(res.data.filename);
       })
-      .catch(function (response) {
-          //handle error
-          console.log(response);
+      .catch(res => {
+        console.log(res);
       });
 
     this.props.updateFilesState(files)
