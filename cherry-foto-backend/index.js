@@ -25,12 +25,20 @@ app.listen(port, () => console.log(`CherryFoto listening on port ${port}!`));
 
 app.get('/image', (req, res) => {
     initFolderIfAbsent('/uploads/images');
-    res.sendFile(getFilePath(req.query.filename, '/uploads/images/'));
+    res.sendFile(
+        getFilePath(req.query.filename, '/uploads/images/', function (err) {
+            console.log("Error with sending link");
+        })
+    );
 })
 
 app.get('/filteredImage', (req, res) => {
     initFolderIfAbsent('edited_photos');
-    res.sendFile(getFilePath(req.query.filename, '/edited_photos'))
+    res.sendFile(
+        getFilePath(req.query.filename, '/edited_photos', function (err) {
+            console.log("Error with sending link");
+        })
+    )
 })
 
 app.post('/upload', upload.single('photo'), (req, res) => {
