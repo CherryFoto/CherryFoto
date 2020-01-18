@@ -9,13 +9,21 @@ const upload = multer({ dest: __dirname + '/uploads/images' });
 const app = express();
 const port = 3001;
 
-const map = {
+const filters = {
     invert: invertColors,
     grayscale: grayScale,
     sunset: sunset,
     cool: cool,
-    modulo: modulo
+    cartoon: cartoon,
 }
+
+const filtersArray = [
+    invertColors,
+    grayScale,
+    sunset,
+    cool,
+    cartoon,
+]
 
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
@@ -53,6 +61,7 @@ app.post('/upload', upload.single('photo'), (req, res) => {
 app.get('/filterImageLink', async (req, res) => {
     let filePath = getFilePath(req.query.filename, '/uploads/images/');
     let filterChosen = req.query.filter;
+    console.log(filterChosen)
 
     let fp = await getImageThenEdit(filePath, processPixels, filterChosen);
     res.send(fp);
@@ -98,16 +107,14 @@ function processPixels(img, filterChosen) {
     const pixels = imageData.data;
     const numPixels = w * h;
 
-    map[filterChosen](pixels, numPixels);
+    const isRandom = filterChosen == 'random';
 
-    // const filterChosen = false;
-
-    // if (filterChosen) {
-    //     map[0](pixels, numPixels);
-    // } else {
-    //     const numberOfFilters = map.length;
-    //     map[getRandomNumber(numberOfFilters)](pixels, numPixels);
-    // }
+    if (!isRandom) {
+        filters[filterChosen](pixels, numPixels);
+    } else {
+        const numberOfFilters = filtersArray.length;
+        filtersArray[getRandomNumber(numberOfFilters)](pixels, numPixels);
+    }
 
     ctx.clearRect(0, 0, w, h);
     ctx.putImageData(imageData, 0, 0);
@@ -158,7 +165,7 @@ function cool(pixels, numPixels) {
     }
 }
 
-function modulo(pixels, numPixels) {
+function cartoon(pixels, numPixels) {
     for (let i = 0; i< numPixels; i++) {
         const r = (pixels[i * 4] + 100) % 255;
         const g = pixels[(i * 4) + 1];
