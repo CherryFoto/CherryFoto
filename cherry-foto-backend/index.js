@@ -68,10 +68,10 @@ function processPixels(img) {
     const pixels = imageData.data
     const numPixels = w * h
 
-    const filterChosen = false;
+    const filterChosen = true;
 
     if (filterChosen) {
-        map[0](pixels, numPixels)
+        map[1](pixels, numPixels)
     } else {
         const numberOfFilters = map.length
         map[getRandomNumber(numberOfFilters)](pixels, numPixels)
@@ -115,7 +115,7 @@ function sunset(pixels, numPixels) {
 }
 
 function cool(pixels, numPixels) {
-    for (let i = 0; i< numPixels; i++) {
+    for (let i = 0; i < numPixels; i++) {
         const r = Math.max(pixels[i * 4] - 30, 0)
         const g = Math.max(pixels[(i * 4) + 1] - 5)
         const b = pixels[(i * 4) + 2]
@@ -126,10 +126,10 @@ function cool(pixels, numPixels) {
 }
 
 function modulo(pixels, numPixels) {
-    for (let i = 0; i< numPixels; i++) {
-        const r = (pixels[i * 4] + 100) % 255
-        const g = pixels[(i * 4) + 1]
-        const b = pixels[(i * 4) + 2]
+    for (let i = 0; i < numPixels; i++) {
+        const r = Math.min(pixels[i * 4] + 50, 255)
+        const g = Math.min(pixels[(i * 4) + 1] + 50, 255)
+        const b = Math.max(pixels[(i * 4) + 2] - 50, 0)
         pixels[i * 4] = r
         pixels[(i * 4) + 1] = g
         pixels[(i * 4) + 2] = b
