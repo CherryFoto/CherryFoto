@@ -17,13 +17,24 @@ app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 app.get('/', (req, res) => res.send('Hello World!'))
 
 app.get('/image', (req, res) => {
-    // console.log()
+    const uploadedPath = path.resolve(
+        __dirname, '/uploads/images'
+    )
+    if (!fs.existsSync(uploadedPath)) {
+        fs.mkdirSync(uploadedPath)
+    }
     res.sendFile(__dirname + '/uploads/images/' + req.query.filePath)
 })
 
 app.post('/upload', upload.single('photo'), (req, res) => {
     if (req.file) {
         res.json(req.file);
+        const editedPhotosPath = path.resolve(
+            __dirname, 'editedPhotos'
+        )
+        if (!fs.existsSync(editedPhotosPath)) {
+            fs.mkdirSync(editedPhotosPath)
+        }
         getImageThenEdit(req.file.path, processPixels)
         return res.status(200);
     } else {
