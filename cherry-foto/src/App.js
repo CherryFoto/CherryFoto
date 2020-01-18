@@ -141,10 +141,10 @@ class App extends Component {
             <Button
               variant="contained"
               color="primary"
-              onClick={this.filterOnClick("cartoon")}
+              onClick={this.filterOnClick("wonky")}
               style={{ marginRight: 10, marginLeft: 10, borderRadius: 4 }}
             >
-              Cartoon
+              Wonky
             </Button>
             <Button
               variant="contained"
