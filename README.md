@@ -3,7 +3,7 @@
 **Members:** See Zi Yang, Chen Ri Sheng, Ho Hol Yin
 
 ## About
-CherryFoto is a webapp that allows users to filter their photos with our cusotmised pixel-manipulation filters. It is created 
+CherryFoto is a webapp that allows users to filter their photos with our customised pixel-manipulation filters. It is created 
 in HacknRoll 2020.
 
 ## Setting up
