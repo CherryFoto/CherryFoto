@@ -22,7 +22,7 @@ const filtersArray = [
     grayScale,
     sunset,
     cool,
-    wonky
+    wonky,
 ]
 
 app.use('/static', express.static(path.join(__dirname, 'public')));
@@ -89,14 +89,6 @@ async function getImageThenEdit(uri, callback, filterChosen) {
     }
 }
 
-// Returns the exact same image
-function duplicateImage(img) {
-    var canvas = createCanvas(img.width, img.height);
-    var ctx = canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0);
-    writeEditedImage(canvas, img.src)
-}
-
 function processPixels(img, filterChosen) {
     const w = img.width;
     const h = img.height;
@@ -108,12 +100,13 @@ function processPixels(img, filterChosen) {
     const numPixels = w * h;
 
     const isRandom = filterChosen == 'random';
+    const isReset = filterChosen == 'reset';
 
-    if (!isRandom) {
-        filters[filterChosen](pixels, numPixels, w, h);
-    } else {
+    if (isRandom) {
         const numberOfFilters = filtersArray.length;
         filtersArray[getRandomNumber(numberOfFilters)](pixels, numPixels);
+    } else if (!isReset) {
+        filters[filterChosen](pixels, numPixels, w, h);
     }
 
     ctx.clearRect(0, 0, w, h);
