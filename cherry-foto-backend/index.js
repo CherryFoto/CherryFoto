@@ -17,7 +17,13 @@ const filters = {
   wonky: wonky
 };
 
-const filtersArray = [invertColors, grayScale, sunset, cool, wonky];
+const filtersArray = [
+    invertColors,
+    grayScale,
+    sunset,
+    cool,
+    wonky,
+]
 
 app.use("/static", express.static(path.join(__dirname, "public")));
 
@@ -81,40 +87,31 @@ async function getImageThenEdit(uri, callback, filterChosen) {
   }
 }
 
-// Returns the exact same image
-function duplicateImage(img) {
-  var canvas = createCanvas(img.width, img.height);
-  var ctx = canvas.getContext("2d");
-  ctx.drawImage(img, 0, 0);
-  writeEditedImage(canvas, img.src);
-}
-
 function processPixels(img, filterChosen) {
-  const w = img.width;
-  const h = img.height;
-  var canvas = createCanvas(w, h);
-  var ctx = canvas.getContext("2d");
-  ctx.drawImage(img, 0, 0);
-  const imageData = ctx.getImageData(0, 0, w, h);
-  const pixels = imageData.data;
-  const numPixels = w * h;
+    const w = img.width;
+    const h = img.height;
+    var canvas = createCanvas(w, h);
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    const imageData = ctx.getImageData(0, 0, w, h);
+    const pixels = imageData.data;
+    const numPixels = w * h;
 
-  const isRandom = filterChosen == "random";
+    const isRandom = filterChosen == 'random';
+    const isReset = filterChosen == 'reset';
 
-  if (!isRandom) {
-    filters[filterChosen](pixels, numPixels, w, h);
-  } else {
-    const numberOfFilters = filtersArray.length;
-    const num = getRandomNumber(numberOfFilters);
-    console.log(num);
-    filtersArray[num](pixels, numPixels);
-  }
+    if (isRandom) {
+        const numberOfFilters = filtersArray.length;
+        filtersArray[getRandomNumber(numberOfFilters)](pixels, numPixels);
+    } else if (!isReset) {
+        filters[filterChosen](pixels, numPixels, w, h);
+    }
 
-  ctx.clearRect(0, 0, w, h);
-  ctx.putImageData(imageData, 0, 0);
-  let editedImageFilePath = writeEditedImage(canvas, img.src);
-  console.log("Image successfully filtered!");
-  return editedImageFilePath;
+    ctx.clearRect(0, 0, w, h);
+    ctx.putImageData(imageData, 0, 0);
+    let editedImageFilePath = writeEditedImage(canvas, img.src);
+    console.log("Image successfully filtered!");
+    return editedImageFilePath;
 }
 
 function invertColors(pixels, numPixels, w, h) {
