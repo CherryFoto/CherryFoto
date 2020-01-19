@@ -9,10 +9,13 @@ import {
   Button,
   ButtonGroup,
   Card,
-  CardMedia
+  CardMedia,
+  Fab
 } from "@material-ui/core";
 import axios from "axios";
 import NoImageSnackbar from "./NoImageSnackbar";
+import AutorenewOutlinedIcon from '@material-ui/icons/AutorenewOutlined';
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 class App extends Component {
   constructor(props) {
@@ -21,7 +24,8 @@ class App extends Component {
       files: [],
       image: placeholderImg,
       lastUploadedFilename: "",
-      isSnackbarOpened: false
+      isSnackbarOpened: false,
+      lastEditedImageFilename: "",
     };
   }
 
@@ -64,7 +68,8 @@ class App extends Component {
       .then(res => {
         setTimeout(() => {
           this.setState({
-            image: `http://localhost:3001/filteredImage?filename=${res.data}`
+            image: `http://localhost:3001/filteredImage?filename=${res.data}`,
+            lastEditedImageFilename: res.data
           });
         }, 100);
       });
@@ -81,7 +86,6 @@ class App extends Component {
               </span>
               {" CherryFoto"}
             </Typography>
-
             <UploadPhotoDialog
               updateFilesState={this.updateFilesState}
               updateLastUploadedFilename={this.updateLastUploadedFilename}
@@ -89,19 +93,9 @@ class App extends Component {
           </Toolbar>
         </AppBar>
         <div style={{ marginBottom: 20 }} />
-        <React.Fragment>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={this.filterOnClick("reset")}
-            style={{ textAlign: "center", marginRight: 730, marginLeft: 730 }}
-          >
-            Reset
-          </Button>
           <Card className={"mainPhotoCard"}>
             <CardMedia component="img" image={this.state.image} />
           </Card>
-        </React.Fragment>
         <div className={"filterButtonsRow"}>
           <ButtonGroup
             fullWidth
@@ -166,6 +160,22 @@ class App extends Component {
             </Button>
           </ButtonGroup>
           <div style={{ marginBottom: 20 }} />
+        </div>
+        <div style={{ margin: "auto", width: 600 }}>
+          <Fab variant="extended" color="secondary" onClick={this.filterOnClick("reset")}>
+            <AutorenewOutlinedIcon/>
+            Reset
+          </Fab>
+          <Fab
+            variant="extended" 
+            color="secondary" 
+            disabled={this.state.lastEditedImageFilename === ""}
+            style={{ marginLeft: 351 }}
+            href={`http://localhost:3001/downloadFilteredImage?filename=${this.state.lastEditedImageFilename}`}
+          >
+            <GetAppIcon/>
+            Download
+          </Fab>
         </div>
         <NoImageSnackbar
           open={this.state.isSnackbarOpened}

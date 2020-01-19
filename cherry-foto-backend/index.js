@@ -49,6 +49,15 @@ app.get("/filteredImage", (req, res) => {
   );
 });
 
+app.get("/downloadFilteredImage", (req, res) => {
+  initFolderIfAbsent("edited_photos");
+  res.download(
+    getFilePath(req.query.filename, "/edited_photos", function(err) {
+      console.log("Error with sending link");
+    })
+  );
+});
+
 app.post("/upload", upload.single("photo"), (req, res) => {
   if (req.file) {
     res.json(req.file);
