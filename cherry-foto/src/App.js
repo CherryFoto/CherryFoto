@@ -37,20 +37,20 @@ class App extends Component {
   };
 
   snackbarHandleClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
 
     this.setState({
       isSnackbarOpened: false
-    })
-  }
+    });
+  };
 
   filterOnClick = filter => () => {
     if (this.state.lastUploadedFilename === "") {
       this.setState({
         isSnackbarOpened: true
-      })
+      });
       return;
     }
 
@@ -65,8 +65,8 @@ class App extends Component {
         setTimeout(() => {
           this.setState({
             image: `http://localhost:3001/filteredImage?filename=${res.data}`
-          })
-        }, 100)
+          });
+        }, 100);
       });
   };
 
@@ -81,17 +81,27 @@ class App extends Component {
               </span>
               {" CherryFoto"}
             </Typography>
+
             <UploadPhotoDialog
               updateFilesState={this.updateFilesState}
               updateLastUploadedFilename={this.updateLastUploadedFilename}
             />
           </Toolbar>
         </AppBar>
-        <div>
+        <div style={{ marginBottom: 20 }} />
+        <React.Fragment>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={this.filterOnClick("reset")}
+            style={{ textAlign: "center", marginRight: 730, marginLeft: 730 }}
+          >
+            Reset
+          </Button>
           <Card className={"mainPhotoCard"}>
             <CardMedia component="img" image={this.state.image} />
           </Card>
-        </div>
+        </React.Fragment>
         <div className={"filterButtonsRow"}>
           <ButtonGroup
             fullWidth
@@ -155,6 +165,7 @@ class App extends Component {
               I'm Feeling Lucky
             </Button>
           </ButtonGroup>
+          <div style={{ marginBottom: 20 }} />
         </div>
         <NoImageSnackbar
           open={this.state.isSnackbarOpened}
