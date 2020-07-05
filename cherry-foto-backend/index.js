@@ -123,45 +123,62 @@ function processPixels(img, filterChosen) {
     return editedImageFilePath;
 }
 
+function red(index) {
+    return index * 4;
+}
+
+function green(index) {
+    return index * 4 + 1;
+}
+
+function blue(index) {
+    return index * 4 + 2;
+}
+
+// alpha defines opacity
+function alpha(index) {
+    return index * 4 + 3;
+}
+
 function invertColors(pixels, numPixels, w, h) {
   for (let i = 0; i < numPixels; i++) {
-    pixels[i * 4] = 255 - pixels[i * 4];
-    pixels[i * 4 + 1] = 255 - pixels[i * 4 + 1];
-    pixels[i * 4 + 2] = 255 - pixels[i * 4 + 2];
+    pixels[red(i)] = 255 - pixels[i * 4];
+    pixels[green(i)] = 255 - pixels[i * 4 + 1];
+    pixels[blue(i)] = 255 - pixels[i * 4 + 2];
   }
 }
 
 function grayScale(pixels, numPixels, w, h) {
   for (let i = 0; i < numPixels; i++) {
-    const r = pixels[i * 4];
-    const g = pixels[i * 4 + 1];
-    const b = pixels[i * 4 + 2];
+    const r = pixels[red(i)];
+    const g = pixels[green(i)];
+    const b = pixels[blue(i)];
     const avg = (r + g + b) / 3;
-    pixels[i * 4] = avg;
-    pixels[i * 4 + 1] = avg;
-    pixels[i * 4 + 2] = avg;
+    pixels[red(i)] = avg;
+    pixels[green(i)] = avg;
+    pixels[blue(i)] = avg;
   }
 }
 
 function sunset(pixels, numPixels, w, h) {
   for (let i = 0; i < numPixels; i++) {
-    const r = pixels[i * 4];
-    const g = Math.max(pixels[i * 4 + 1] - 30, 0);
-    const b = Math.max(pixels[i * 4 + 2] - 60, 0);
-    pixels[i * 4] = r;
-    pixels[i * 4 + 1] = g;
-    pixels[i * 4 + 2] = b;
+    const r = pixels[red(i)];
+    const g = Math.max(pixels[green(i)] - 30, 0);
+    const b = Math.max(pixels[blue(i)] - 60, 0);
+    pixels[red(i)] = r;
+    pixels[green(i)] = g;
+    pixels[blue(i)] = b;
   }
 }
 
 function cool(pixels, numPixels, w, h) {
   for (let i = 0; i < numPixels; i++) {
-    const r = Math.max(pixels[i * 4] - 30, 0);
-    const g = Math.max(pixels[i * 4 + 1] - 5);
-    const b = pixels[i * 4 + 2];
-    pixels[i * 4] = r;
-    pixels[i * 4 + 1] = g;
-    pixels[i * 4 + 2] = b;
+    const r = Math.max(pixels[red(i)] - 30, 0);
+    const g = Math.max(pixels[green(i)] - 5);
+    const b = pixels[blue(i)];
+    pixels[red(i)] = r;
+    pixels[green(i)] = g;
+    pixels[blue(i)] = b;
   }
 }
 
@@ -180,13 +197,13 @@ function wonky(pixels, numPixels, w, h) {
     if (rowValue < heightThickness) {
       continue;
     }
-    const r = pixels[i * 4];
-    const g = pixels[i * 4 + 1];
-    const b = pixels[i * 4 + 2];
+    const r = pixels[red(i)];
+    const g = pixels[green(i)];
+    const b = pixels[blue(i)];
     const avg = (r + g + b) / 3;
-    pixels[i * 4] = avg;
-    pixels[i * 4 + 1] = avg;
-    pixels[i * 4 + 2] = avg;
+    pixels[red(i)] = avg;
+    pixels[green(i)] = avg;
+    pixels[blue(i)] = avg;
   }
 }
 
